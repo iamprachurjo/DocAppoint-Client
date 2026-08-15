@@ -16,9 +16,9 @@ export default function DoctorForm() {
 
     // Convert fee to number
     doctorData.fee = Number(doctorData.fee);
-
+ 
     try {
-      const res = await fetch("http://localhost:2000/doctors", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
