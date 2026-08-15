@@ -53,7 +53,7 @@ const Navbar = () => {
             </Button>
           </Link>
         </nav>
-        <Link href="/register">
+        <Link href="/signup">
           <Button className="bg-[#5F6FFF] text-white">Create Account</Button>
         </Link>
 
@@ -99,7 +99,7 @@ const Navbar = () => {
               </li>
 
               <li>
-                <Link href="/register" onClick={() => setIsOpen(false)}>
+                <Link href="/signup" onClick={() => setIsOpen(false)}>
                   <Button className="bg-[#5F6FFF] text-white w-full">
                     Create Account
                   </Button>
