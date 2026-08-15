@@ -34,7 +34,7 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center gap-6 justify-between">
-          <ul className="flex items-center gap-6 text-sm font-semibold">
+          <ul className="flex items-center gap-6 text-md font-semibold">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
