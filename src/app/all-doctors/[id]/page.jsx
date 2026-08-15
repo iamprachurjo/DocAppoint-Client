@@ -21,7 +21,7 @@ export default function DoctorAppointmentPage({ params }) {
     { day: "TUE", date: "18" },
     { day: "WED", date: "19" },
     { day: "THU", date: "20" },
-    { day: "FRI", date: "21" },
+    
   ];
 
   // --- Fetch doctor data ---
@@ -214,10 +214,10 @@ export default function DoctorAppointmentPage({ params }) {
         <button
           onClick={handleBooking}
           disabled={!selectedTime}
-          className={`mt-8 px-8 py-3 hover:cursor-pointer rounded-full text-sm font-medium transition-all duration-200 ${
+          className={`mt-8 px-8 py-3 rounded-full text-sm font-medium transition-all duration-200 ${
             selectedTime
-              ? "bg-[#5F6FFF] text-white hover:bg-blue-300 shadow-md"
-              : "bg-blue-300 text-white cursor-not-allowed opacity-80"
+              ? "bg-[#5F6FFF] hover:cursor-pointer hover:bg-[#5060f5] text-white  shadow-md"
+              : "bg-[#5060f5] text-white cursor-not-allowed opacity-80"
           }`}
         >
           Book an appointment
