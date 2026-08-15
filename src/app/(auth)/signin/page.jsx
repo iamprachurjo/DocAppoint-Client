@@ -1,36 +1,46 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { FcGoogle } from 'react-icons/fc';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from "react";
+import Link from "next/link";
+import { FcGoogle } from "react-icons/fc";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      toast.error('Please fill in all required fields.');
+      toast.error("Please fill in all required fields.");
       return;
     }
 
     // Replace with your authentication API call
-    toast.success('Logged in successfully!');
+    const { data, error } = await authClient.signIn.email({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (data) {
+      toast.success("Logged in successfully!");
+      redirect("/");
+    }
   };
 
   const handleGoogleSignIn = () => {
-    toast.info('Redirecting to Google Authentication...');
+    toast.info("Redirecting to Google Authentication...");
     // Add Google OAuth logic here (e.g., NextAuth signIn('google'))
   };
 
@@ -110,7 +120,7 @@ export default function LoginPage() {
 
         {/* Footer Navigation */}
         <p className="mt-6 text-xs sm:text-sm text-gray-600 text-center">
-          Create a new account?{' '}
+          Create a new account?{" "}
           <Link
             href="/signup"
             className="text-[#5F6FFF] underline font-medium hover:text-blue-600"

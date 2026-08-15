@@ -29,10 +29,10 @@ export default function SignUpPage() {
       password: formData.password,
       name: formData.fullName,
       image: formData.imageUrl,
-      callbackURL: "/",
+      
     });
     if (data) {
-      redirect("/");
+      redirect("/signin");
     }
     console.log(data, error);
   };
