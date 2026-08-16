@@ -39,9 +39,13 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     toast.info("Redirecting to Google Authentication...");
-    // Add Google OAuth logic here (e.g., NextAuth signIn('google'))
+    // Add Google OAuth logic here
+
+    await authClient.signIn.social({
+      provider: "google",
+    });
   };
 
   return (

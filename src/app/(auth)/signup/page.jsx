@@ -29,7 +29,6 @@ export default function SignUpPage() {
       password: formData.password,
       name: formData.fullName,
       image: formData.imageUrl,
-      
     });
     if (data) {
       redirect("/signin");
@@ -37,9 +36,13 @@ export default function SignUpPage() {
     console.log(data, error);
   };
 
-  const handleGoogleSignUp = () => {
+  const handleGoogleSignUp = async () => {
+    // Google Auth logic here
+    await authClient.signIn.social({
+      provider: "google",
+    });
+
     console.log("Google Sign-up clicked");
-    // Add Google Auth logic here (e.g., NextAuth signIn('google'))
   };
 
   return (
