@@ -24,9 +24,9 @@ const Navbar = () => {
 
   // Get SignIn user session
   const { data: session } = authClient.useSession();
-
   const user = session?.user;
-  console.log(user);
+
+  // console.log(user);
 
   // SignOut funtion worked
   const handleSignOut = async () => {
@@ -68,28 +68,31 @@ const Navbar = () => {
             </Button>
           </Link>
         </nav>
-        {user ? (
-          <>
-            <CustomAvater user={user} />
-          </>
-        ) : (
-          <>
-            <Link href="/signup">
-              <Button className="bg-[#5F6FFF] text-white hidden md:block">
-                Create Account
-              </Button>
-            </Link>
-          </>
-        )}
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden p-1"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle menu"
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        <div className="flex items-center justify-center gap-3">
+          {user ? (
+            <>
+              <CustomAvater user={user} />
+            </>
+          ) : (
+            <>
+              <Link href="/signup">
+                <Button className="bg-[#5F6FFF] text-white hidden md:block">
+                  Create Account
+                </Button>
+              </Link>
+            </>
+          )}
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-1"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}

@@ -1,4 +1,4 @@
-import AllDoctors from '@/Components/AllDoctors';
+
 import DoctorsInfo from '@/Components/Reuseable/DoctorsInfo';
 import React from 'react';
 

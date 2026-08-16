@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { MdVerified } from "react-icons/md";
 import { LuInfo } from "react-icons/lu";
+import { authClient } from "@/lib/auth-client";
 
 export default function DoctorAppointmentPage({ params }) {
   // --- State ---
@@ -21,7 +22,6 @@ export default function DoctorAppointmentPage({ params }) {
     { day: "TUE", date: "18" },
     { day: "WED", date: "19" },
     { day: "THU", date: "20" },
-    
   ];
 
   // --- Fetch doctor data ---
@@ -52,15 +52,57 @@ export default function DoctorAppointmentPage({ params }) {
         doctorData?.time4,
       ].filter(Boolean);
 
-  // --- Booking handler ---
-  const handleBooking = () => {
-    if (selectedDay !== null && selectedTime) {
-      alert(
-        `Booking confirmed for ${days[selectedDay].day} ${days[selectedDay].date} at ${selectedTime}`,
-      );
-      // You can replace this with an API POST call later
-    } else {
+  // Get SignIn user session
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
+  // console.log(user)
+  // console.log(doctorData)
+
+  const handleBooking = async () => {
+    // 1. Guard clause for user session
+    if (!user) {
+      alert("Please log in to book an appointment.");
+      return;
+    }
+
+    // 2. Guard clause for date & time selection
+    if (selectedDay === null || !selectedTime) {
       alert("Please select a day and time slot.");
+      return;
+    }
+
+    // 3. Format Date & Time cleanly
+    const formattedBookingDate = `${days[selectedDay].date} Sep 2026 | ${selectedTime}`;
+
+    // 4. Construct Payload
+    const bookingData = {
+      userId: user?.id,
+      userName: user?.name,
+      doctorId: doctorData._id,
+      doctorName: doctorData.doctor,
+      doctorSpeciality: doctorData.speciality,
+      doctorAddress: doctorData.location,
+      doctorImage: doctorData.image,
+      bookingDate: formattedBookingDate,
+    };
+
+    try {
+      const res = await fetch("http://localhost:2000/bookings", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const data = await res.json();
+      console.log("Booking Response:", data);
+
+      alert(`Booking confirmed for ${formattedBookingDate}`);
+    } catch (err) {
+      console.error("Failed to book appointment:", err);
+      alert("Failed to submit booking. Please try again.");
     }
   };
 
@@ -170,26 +212,6 @@ export default function DoctorAppointmentPage({ params }) {
             );
           })}
         </div>
-
-        {/* Time Slots */}
-        {/* <div className="flex flex-wrap gap-3 mt-6">
-          {timeSlots.map((time, index) => {
-            const isSelected = selectedTime === time;
-            return (
-              <button
-                key={index}
-                onClick={() => setSelectedTime(isSelected ? null : time)}
-                className={`px-5 py-2.5 rounded-full border text-sm transition-all duration-200 cursor-pointer ${
-                  isSelected
-                    ? "bg-[#5F6FFF] border-[#5F6FFF] text-white shadow-md"
-                    : "bg-white border-gray-200 text-gray-600 hover:border-[#5F6FFF]"
-                }`}
-              >
-                {time}
-              </button>
-            );
-          })}
-        </div> */}
 
         <div className="flex flex-wrap gap-3 mt-6">
           {timeSlots?.map((time, index) => {
