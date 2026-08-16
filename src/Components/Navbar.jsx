@@ -7,6 +7,10 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@heroui/react";
 import logo from "../../public/assets/logo-prescripto.svg";
+import { authClient } from "@/lib/auth-client";
+import { CustomAvater } from "./Reuseable/CustomAvater";
+
+import { ArrowRightFromSquare } from "@gravity-ui/icons";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +21,17 @@ const Navbar = () => {
     { href: "/about-us", label: "About" },
     { href: "/contact", label: "Contact" },
   ];
+
+  // Get SignIn user session
+  const { data: session } = authClient.useSession();
+
+  const user = session?.user;
+  console.log(user);
+
+  // SignOut funtion worked
+  const handleSignOut = async () => {
+    await authClient.signOut();
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-white mx-auto container border-b-2">
@@ -53,9 +68,19 @@ const Navbar = () => {
             </Button>
           </Link>
         </nav>
-        <Link href="/signup">
-          <Button className="bg-[#5F6FFF] text-white">Create Account</Button>
-        </Link>
+        {user ? (
+          <>
+            <CustomAvater user={user} />
+          </>
+        ) : (
+          <>
+            <Link href="/signup">
+              <Button className="bg-[#5F6FFF] text-white hidden md:block">
+                Create Account
+              </Button>
+            </Link>
+          </>
+        )}
 
         {/* Mobile Menu Button */}
         <button
@@ -98,13 +123,30 @@ const Navbar = () => {
                 </Link>
               </li>
 
-              <li>
-                <Link href="/signup" onClick={() => setIsOpen(false)}>
-                  <Button className="bg-[#5F6FFF] text-white w-full">
-                    Create Account
-                  </Button>
-                </Link>
-              </li>
+              {user ? (
+                <>
+                  <li>
+                    <Button
+                      onClick={handleSignOut}
+                      variant="outline"
+                      className="flex w-full gap-3"
+                    >
+                      Log Out
+                      <ArrowRightFromSquare className="size-3.5 text-danger" />
+                    </Button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link href="/signup" onClick={() => setIsOpen(false)}>
+                      <Button className="bg-[#5F6FFF] text-white w-full">
+                        Create Account
+                      </Button>
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </motion.div>
         )}

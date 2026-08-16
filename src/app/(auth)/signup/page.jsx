@@ -43,7 +43,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 font-sans">
+    <div className="min-h-screen flex items-center justify-center  p-4 font-sans">
       <div className="w-full max-w-md bg-white rounded-2xl p-6 sm:p-10 shadow-md border border-gray-100">
         {/* Title & Subtitle */}
         <h2 className="text-2xl font-bold text-gray-800">Create Account</h2>
@@ -119,7 +119,7 @@ export default function SignUpPage() {
           {/* Create Account Button */}
           <button
             type="submit"
-            className="w-full mt-2 bg-[#5F6FFF] text-white py-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition duration-200 cursor-pointer shadow-sm"
+            className="w-full mt-2 bg-[#5F6FFF] text-white py-3 rounded-lg text-sm font-medium hover:bg-[#5060f5] transition duration-200 cursor-pointer shadow-sm"
           >
             Create account
           </button>
@@ -150,7 +150,7 @@ export default function SignUpPage() {
           Already have an account?{" "}
           <Link
             href="/signin"
-            className="text-[#5F6FFF] underline font-medium hover:text-blue-600"
+            className="text-[#5F6FFF] underline font-medium hover:text-[#5060f5]"
           >
             Signin here
           </Link>
