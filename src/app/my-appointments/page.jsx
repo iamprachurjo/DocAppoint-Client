@@ -32,12 +32,22 @@ const MyAppointments = () => {
     fetchAppointments();
   }, [userId]);
 
-  const handleCancel = (id) => {
+  const handleCancel = async (id) => {
     setAppointments((prev) =>
       prev.map((item) =>
         item._id === id ? { ...item, isCancelled: true } : item,
       ),
     );
+
+    // Cancel Appointment function
+    const res = await fetch(`http://localhost:2000/booking/${id}`, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    const data = await res.json();
+    console.log(data);
   };
 
   const handlePay = (id) => {

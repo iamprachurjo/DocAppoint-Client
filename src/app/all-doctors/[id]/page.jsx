@@ -5,9 +5,10 @@ import Image from "next/image";
 import { MdVerified } from "react-icons/md";
 import { LuInfo } from "react-icons/lu";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function DoctorAppointmentPage({ params }) {
-  // --- State ---
+  const router = useRouter();
   const [doctorData, setDoctorData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -100,6 +101,8 @@ export default function DoctorAppointmentPage({ params }) {
       console.log("Booking Response:", data);
 
       alert(`Booking confirmed for ${formattedBookingDate}`);
+
+      router.push("/my-appointments");
     } catch (err) {
       console.error("Failed to book appointment:", err);
       alert("Failed to submit booking. Please try again.");
