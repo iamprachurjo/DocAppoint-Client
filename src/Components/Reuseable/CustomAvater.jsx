@@ -12,7 +12,7 @@ export function CustomAvater({ user }) {
       <Dropdown.Trigger className="rounded-full">
         <Avatar>
           <Avatar.Image alt={user?.name} src={user?.image} />
-          <Avatar.Fallback delayMs={600}>JD</Avatar.Fallback>
+          <Avatar.Fallback delayMs={600}> {user?.name ? user.name.split(" ")[0] : "User"}</Avatar.Fallback>
         </Avatar>
       </Dropdown.Trigger>
       <Dropdown.Popover>

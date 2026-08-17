@@ -10,7 +10,7 @@ export default function Footer() {
           <div>
             <Image src={logo} alt="fd" width={200} height={199} />
 
-            <p className="mt-6 text-gray-600 leading-8 ">
+            <p className="mt-6 text-gray-600 leading-7">
               DocAppoint helps patients connect with trusted doctors quickly and
               easily. Book appointments online, manage schedules, and get
               quality healthcare support anytime from the comfort of your home.
@@ -47,14 +47,14 @@ export default function Footer() {
 
             <ul className="space-y-4 text-sm font-bold text-gray-500">
               <li>+0-000-000-000</li>
-              <li>reatstacdev@gmail.com</li>
+              <li>docappoint@gmail.com</li>
             </ul>
           </div>
         </div>
 
         {/* Bottom */}
         <div className="border-t border-gray-300 py-6 text-center">
-          <p className="text-gray-700 text-sm md:text-base">
+          <p className="text-gray-700 text-sm  md:font-semibold">
             Copyright 2026 © Prachurjo.dev - All Right Reserved.
           </p>
         </div>
