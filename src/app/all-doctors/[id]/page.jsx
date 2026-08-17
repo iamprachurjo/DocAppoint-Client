@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Image from "next/image";
 import { MdVerified } from "react-icons/md";
 import { LuInfo } from "react-icons/lu";
@@ -9,13 +9,22 @@ import { useRouter } from "next/navigation";
 
 export default function DoctorAppointmentPage({ params }) {
   const router = useRouter();
+
+  // 1. Safely unwrap Next.js params using React.use()
+  const resolvedParams = use(params);
+  const id = resolvedParams.id;
+
   const [doctorData, setDoctorData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDay, setSelectedDay] = useState(0);
   const [selectedTime, setSelectedTime] = useState(null);
 
-  // --- Static slot data (will come from API later) ---
+  // Get signed-in user session
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
+  // --- Static slot data ---
   const days = [
     { day: "SAT", date: "15" },
     { day: "SUN", date: "16" },
@@ -29,57 +38,57 @@ export default function DoctorAppointmentPage({ params }) {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const { id } = await params;
-        const res = await fetch(`http://localhost:2000/appointments/${id}`);
-        if (!res.ok) throw new Error("Doctor not found");
-        const data = await res.json();
-        setDoctorData(data);
+        setLoading(true);
+
+        const { data: tokenData, error: tokenError } = await authClient.token();
+        if (tokenError || !tokenData?.token) {
+          throw new Error("Authentication failed. Please log in again.");
+        }
+
+        const res = await fetch(`http://localhost:2000/doctors/${id}`, {
+          headers: { Authorization: `Bearer ${tokenData.token}` },
+        });
+
+        if (!res.ok) {
+          throw new Error(
+            res.status === 404
+              ? "Doctor not found."
+              : "Failed to fetch doctor.",
+          );
+        }
+
+        setDoctorData(await res.json());
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Something went wrong.");
       } finally {
         setLoading(false);
       }
     };
-    fetchDoctor();
-  }, [params]);
 
-  // Safely extract time slots array from doctorData
-  const timeSlots = Array.isArray(doctorData?.timeSlots)
-    ? doctorData.timeSlots
-    : [
-        doctorData?.time1,
-        doctorData?.time2,
-        doctorData?.time3,
-        doctorData?.time4,
-      ].filter(Boolean);
+    if (id) fetchDoctor();
+  }, [id]); // Correctly depends on 'id' now
 
-  // Get SignIn user session
-  const { data: session } = authClient.useSession();
-  const user = session?.user;
+  // --- Cleanly extract time slots ---
+  const timeSlots =
+    doctorData?.timeSlots ||
+    [
+      doctorData?.time1,
+      doctorData?.time2,
+      doctorData?.time3,
+      doctorData?.time4,
+    ].filter(Boolean);
 
-  // console.log(user)
-  // console.log(doctorData)
-
+  // --- Handle Booking Submission ---
   const handleBooking = async () => {
-    // 1. Guard clause for user session
-    if (!user) {
-      alert("Please log in to book an appointment.");
-      return;
-    }
+    if (!user) return alert("Please log in to book an appointment.");
+    if (selectedDay === null || !selectedTime)
+      return alert("Please select a day and time slot.");
 
-    // 2. Guard clause for date & time selection
-    if (selectedDay === null || !selectedTime) {
-      alert("Please select a day and time slot.");
-      return;
-    }
-
-    // 3. Format Date & Time cleanly
     const formattedBookingDate = `${days[selectedDay].date} Sep 2026 | ${selectedTime}`;
 
-    // 4. Construct Payload
     const bookingData = {
-      userId: user?.id,
-      userName: user?.name,
+      userId: user.id,
+      userName: user.name,
       doctorId: doctorData._id,
       doctorName: doctorData.doctor,
       doctorSpeciality: doctorData.speciality,
@@ -89,34 +98,39 @@ export default function DoctorAppointmentPage({ params }) {
     };
 
     try {
+      // Get fresh token for the POST request
+      const { data: tokenData } = await authClient.token();
+      const token = tokenData?.token;
+
       const res = await fetch("http://localhost:2000/bookings", {
         method: "POST",
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }), // Include Auth header for security
         },
         body: JSON.stringify(bookingData),
       });
 
-      const data = await res.json();
-      console.log("Booking Response:", data);
+      if (!res.ok) throw new Error("Server rejected the booking");
 
       alert(`Booking confirmed for ${formattedBookingDate}`);
-
       router.push("/my-appointments");
     } catch (err) {
-      console.error("Failed to book appointment:", err);
+      console.error("Booking error:", err);
       alert("Failed to submit booking. Please try again.");
     }
   };
 
-  // --- Loading & error states ---
+  // --- Loading & Error States ---
   if (loading) {
     return <div className="text-center py-20">Loading doctor details...</div>;
   }
 
   if (error || !doctorData) {
     return (
-      <div className="text-center py-20 text-red-500">Doctor not found.</div>
+      <div className="text-center py-20 text-red-500">
+        {error || "Doctor not found."}
+      </div>
     );
   }
 
