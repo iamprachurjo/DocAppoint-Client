@@ -45,7 +45,7 @@ export default function DoctorAppointmentPage({ params }) {
           throw new Error("Authentication failed. Please log in again.");
         }
 
-        const res = await fetch(`http://localhost:2000/doctors/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/doctors/${id}`, {
           headers: { Authorization: `Bearer ${tokenData.token}` },
         });
 
@@ -102,7 +102,7 @@ export default function DoctorAppointmentPage({ params }) {
       const { data: tokenData } = await authClient.token();
       const token = tokenData?.token;
 
-      const res = await fetch("http://localhost:2000/bookings", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

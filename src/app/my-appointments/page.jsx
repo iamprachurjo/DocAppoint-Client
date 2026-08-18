@@ -19,7 +19,7 @@ const MyAppointments = () => {
       if (!userId) return;
 
       try {
-        const res = await fetch(`http://localhost:2000/booking/${userId}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/booking/${userId}`);
         const data = await res.json();
         setAppointments(data);
       } catch (error) {
@@ -40,7 +40,7 @@ const MyAppointments = () => {
     );
 
     // Cancel Appointment function
-    const res = await fetch(`http://localhost:2000/booking/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/booking/${id}`, {
       method: "DELETE",
       headers: {
         "content-type": "application/json",
